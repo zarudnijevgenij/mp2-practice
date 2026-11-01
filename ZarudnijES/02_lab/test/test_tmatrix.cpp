@@ -133,6 +133,21 @@ TEST(TDynamicMatrix, matrices_with_different_size_are_not_equal)
 	EXPECT_EQ(0, m1 == m);
 }
 
+TEST(TDynamicMatrix, compare_different_matrices_return_false) 
+{
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(2);
+	m1[0][0] = 1; 
+	m2[0][0] = 2;
+	EXPECT_EQ(1, m1 != m2);
+}
+
+TEST(TDynamicMatrix, compare_equal_matrices_return_false_for_not_equal_operator) {
+	TDynamicMatrix<int> m1(2);
+	TDynamicMatrix<int> m2(2);
+	EXPECT_EQ(0, m1 != m2);
+}
+
 TEST(TDynamicMatrix, can_add_matrices_with_equal_size)
 {
 	TDynamicMatrix<int> m(2);
@@ -179,3 +194,58 @@ TEST(TDynamicMatrix, cant_subtract_matrixes_with_not_equal_size)
 	ASSERT_ANY_THROW(m3 = m1 - m);
 }
 
+TEST(TDynamicMatrix, can_multiply_matrix_by_scalar) {
+	TDynamicMatrix<int> m(2);
+	m[0][0] = 2;
+	TDynamicMatrix<int> res = m * 3;
+	EXPECT_EQ(6, res[0][0]);
+}
+
+TEST(TDynamicMatrix, can_multiply_matrix_by_vector) {
+	TDynamicMatrix<int> m(2);
+	m[0][0] = 1;
+	m[0][1] = 2;
+	m[1][1] = 3;
+
+	TDynamicVector<int> v(2);
+	v[0] = 4;
+	v[1] = 5;
+
+	TDynamicVector<int> v1(2);
+	v[0] = 14; 
+	v[1] = 15;
+
+	// res[0] = 1*4 + 2*5 = 14
+	// res[1] = 0*4 + 3*5 = 15
+	EXPECT_EQ(v1, m * v);
+}
+
+TEST(TDynamicMatrix, cant_multiply_matrix_by_vector_of_wrong_size) {
+	TDynamicMatrix<int> m(2);
+	TDynamicVector<int> v(3);
+	ASSERT_ANY_THROW(m * v);
+}
+
+TEST(TDynamicMatrix, can_multiply_matrices_of_equal_size) {
+	TDynamicMatrix<int> m1(2), m2(2);
+	m1[0][0] = 1;
+	m1[0][1] = 2;
+	m1[1][1] = 3;
+
+	m2[0][0] = 4;
+	m2[0][1] = 5;
+	m2[1][1] = 6;
+
+	TDynamicMatrix<int> res = m1 * m2;
+	// C[0][0] = 1*4 = 4
+	// C[0][1] = 1*5 + 2*6 = 17
+	// C[1][1] = 3*6 = 18
+	EXPECT_EQ(4, res[0][0]);
+	EXPECT_EQ(17, res[0][1]);
+	EXPECT_EQ(18, res[1][1]);
+}
+
+TEST(TDynamicMatrix, cant_multiply_matrices_of_not_equal_size) {
+	TDynamicMatrix<int> m1(2), m2(3);
+	ASSERT_ANY_THROW(m1 * m2);
+}

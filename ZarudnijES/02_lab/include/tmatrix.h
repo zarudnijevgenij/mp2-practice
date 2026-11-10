@@ -196,8 +196,7 @@ public:
   }
 
   using TDynamicVector<TDynamicVector<T>>::operator[];
-
-  size_t size() const noexcept { return sz; }
+  using TDynamicVector<TDynamicVector<T>>::size;
 
 
   // сравнение
@@ -213,10 +212,22 @@ public:
 
 
   // матрично-скалярные операции
-  TDynamicMatrix operator*(const T& val) {
-      TDynamicMatrix res = TDynamicMatrix(sz);
+  TDynamicMatrix<T> operator+(T val) {
+      TDynamicMatrix<T> res(*this);
       for (size_t i = 0; i < sz; i++) {
-              res.pMem[i] = pMem[i] * val;
+          res[i] = res[i] + val;
+      }
+      return res;
+  }
+
+  TDynamicMatrix<T> operator-(T val) {
+      return (*this) + (val * (-1));
+  }
+
+  TDynamicMatrix operator*(const T& val) {
+      TDynamicMatrix<T> res(*this);
+      for (size_t i = 0; i < sz; i++) {
+          res[i] = res[i] * val;
       }
       return res;
   }
@@ -228,7 +239,7 @@ public:
           throw std::exception("size of matrix and vector not equal");
       TDynamicVector<T> res(sz);
       for (size_t i = 0; i < sz; i++) {
-          for (size_t j = 0; j < sz - i ; j++) {
+          for (size_t j = 0; j < pMem[i].size() ; j++) {
               res[i] += pMem[i][j] * v[i+j];
           }
       }
@@ -236,33 +247,41 @@ public:
   }
 
 
-  // матрично-матричные операции
-  TDynamicMatrix operator=(const TDynamicMatrix& m) {
+  //// матрично-матричные операции
+  //TDynamicMatrix operator=(const TDynamicMatrix& m) {
+  //    if (this == &m) return *this;
+  //    if (sz != m.sz) {
+  //        delete[] pMem;
+  //        sz = m.sz;
+  //        pMem = new TDynamicVector<T>[sz];
+  //    }
+  //    std::copy(m.pMem, m.pMem + sz, pMem);
+  //    return *this;
+  //}
+  //TDynamicMatrix operator=(TDynamicMatrix&& m) noexcept {
+  //    if (this == &m) return *this;
+  //    sz = m.sz;
+  //    pMem = m.pMem;
+  //    m.pMem = nullptr;
+  //    return *this;
+  //}
+  TDynamicMatrix& operator=(const TDynamicMatrix& m) {
       if (this == &m) return *this;
-      if (sz != m.sz) {
-          delete[] pMem;
-          sz = m.sz;
-          pMem = new TDynamicVector<T>[sz];
-      }
-      std::copy(m.pMem, m.pMem + sz, pMem);
+      TDynamicVector<TDynamicVector<T>>::operator=(m);
       return *this;
   }
-  TDynamicMatrix operator=(TDynamicMatrix&& m) noexcept {
+  TDynamicMatrix& operator=(TDynamicMatrix&& m) noexcept {
       if (this == &m) return *this;
-      sz = m.sz;
-      pMem = m.pMem;
-      m.pMem = nullptr;
+      TDynamicVector<TDynamicVector<T>>::operator=(std::move(m));
       return *this;
   }
 
   TDynamicMatrix operator+(const TDynamicMatrix& m) {
       if (sz != m.sz)
           throw std::exception("size of matrixes not equal");
-      TDynamicMatrix res = TDynamicMatrix(sz);
+      TDynamicMatrix res(*this);
       for (size_t i = 0; i < sz; i++) {
-          for (size_t j = 0; j < sz - i; j++) {
-              res.pMem[i][j] = pMem[i][j] + m.pMem[i][j];
-          }
+          res[i] = res[i] + m[i];
       }
       return res;
 
@@ -270,11 +289,9 @@ public:
   TDynamicMatrix operator-(const TDynamicMatrix& m) {
       if (sz != m.sz)
           throw std::exception("size of matrixes not equal");
-      TDynamicMatrix res = TDynamicMatrix(sz);
+      TDynamicMatrix res(*this);
       for (size_t i = 0; i < sz; i++) {
-          for (size_t j = 0; j < sz - i; j++) {
-              res.pMem[i][j] = pMem[i][j] - m.pMem[i][j];
-          }
+          res[i] = res[i] - m[i];
       }
       return res;
   }
@@ -301,13 +318,13 @@ public:
       }
       return istr;
   }
-  friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& m) {
-      for (size_t i = 0; i < m.sz; i++) {
-          for (size_t j = 0; j < m.sz - i; j++) {
-              ostr << m.pMem[i][j];
-              if (j + 1 < m.sz - i) ostr << " ";
+  friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v)
+  {
+      for (size_t i = 0; i < v.sz; i++) {
+          for (size_t j = 0; j < i; j++) {
+              ostr << "  "; 
           }
-          ostr << "\n";
+          ostr << v[i] << endl;
       }
       return ostr;
   }

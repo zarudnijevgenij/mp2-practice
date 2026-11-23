@@ -247,24 +247,6 @@ public:
   }
 
 
-  //// матрично-матричные операции
-  //TDynamicMatrix operator=(const TDynamicMatrix& m) {
-  //    if (this == &m) return *this;
-  //    if (sz != m.sz) {
-  //        delete[] pMem;
-  //        sz = m.sz;
-  //        pMem = new TDynamicVector<T>[sz];
-  //    }
-  //    std::copy(m.pMem, m.pMem + sz, pMem);
-  //    return *this;
-  //}
-  //TDynamicMatrix operator=(TDynamicMatrix&& m) noexcept {
-  //    if (this == &m) return *this;
-  //    sz = m.sz;
-  //    pMem = m.pMem;
-  //    m.pMem = nullptr;
-  //    return *this;
-  //}
   TDynamicMatrix& operator=(const TDynamicMatrix& m) {
       if (this == &m) return *this;
       TDynamicVector<TDynamicVector<T>>::operator=(m);
@@ -297,7 +279,7 @@ public:
   }
   TDynamicMatrix operator*(const TDynamicMatrix& m) const
   {
-      if (m.sz != sz) throw std::exception("Invalid argument");
+      if (m.sz != sz) throw std::exception("invalid argument");
       TDynamicMatrix<T> res(sz);
       for (int i = 0; i < sz; i++) {
           for (int j = i; j < sz; j++) {

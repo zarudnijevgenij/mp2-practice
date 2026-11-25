@@ -125,34 +125,22 @@ TEST(TDynamicVector, can_subtract_scalar_from_vector)
 	EXPECT_EQ(v - k, exp);
 }
 
-TEST(TDynamicVector, can_multiply_scalar_by_vector) //todo
+TEST(TDynamicVector, can_multiply_scalar_by_vector) //done
 {
-	TDynamicVector<int> v(3);
-	v[0] = 1;
-	v[1] = 2;
-	v[2] = 3;
-	v = v * 5;
-	EXPECT_EQ(5, v[0]);
-	EXPECT_EQ(10, v[1]);
-	EXPECT_EQ(15, v[2]);
+	const int k = 5;
+	TDynamicVector<int> v(3), exp(3);
+	v[0] = 1; v[1] = 2; v[2] = 3;
+	exp[0] = v[0] * k; exp[1] = v[1] * k; exp[2] = v[2] * k;
+	EXPECT_EQ(v * k, exp);
 }
 
-TEST(TDynamicVector, can_add_vectors_with_equal_size) //todo
+TEST(TDynamicVector, can_add_vectors_with_equal_size) //done
 {
-	TDynamicVector<int> v(3);
-	TDynamicVector<int> v1(3);
-	v[0] = 1;
-	v[1] = 2;
-	v[2] = 3;
-	v1[0] = 1;
-	v1[1] = 2;
-	v1[2] = 3;
-	ASSERT_NO_THROW(v + v1); //remove
-	TDynamicVector<int> v2(3);
-	v2 = v + v1;
-	EXPECT_EQ(2, v2[0]);
-	EXPECT_EQ(4, v2[1]);
-	EXPECT_EQ(6, v2[2]);
+	TDynamicVector<int> v(3), v1(3), exp(3);
+	v[0] = 1;  v[1] = 2;  v[2] = 3;
+	v1[0] = 1; v1[1] = 2; v1[2] = 3;
+	exp[0] = v[0] + v1[0]; exp[1] = v[1] + v1[1]; exp[2] = v[2] + v1[2];
+	EXPECT_EQ(v + v1, exp);
 }
 
 TEST(TDynamicVector, cant_add_vectors_with_not_equal_size)
@@ -167,22 +155,13 @@ TEST(TDynamicVector, cant_add_vectors_with_not_equal_size)
 	ASSERT_ANY_THROW(v + v1);
 }
 
-TEST(TDynamicVector, can_subtract_vectors_with_equal_size)  //todo
+TEST(TDynamicVector, can_subtract_vectors_with_equal_size)  //done
 {
-	TDynamicVector<int> v(3);
-	TDynamicVector<int> v1(3);
-	v[0] = 10;
-	v[1] = 20;
-	v[2] = 30;
-	v1[0] = 1;
-	v1[1] = 2;
-	v1[2] = 3;
-	ASSERT_NO_THROW(v - v1); // remove
-	TDynamicVector<int> v2(3);
-	v2 = v - v1;
-	EXPECT_EQ(9, v2[0]);
-	EXPECT_EQ(18, v2[1]);
-	EXPECT_EQ(27, v2[2]);
+	TDynamicVector<int> v(3), v1(3), exp(3);
+	v[0] = 1;  v[1] = 2;  v[2] = 3;
+	v1[0] = 1; v1[1] = 2; v1[2] = 3;
+	exp[0] = v[0] - v1[0]; exp[1] = v[1] - v1[1]; exp[2] = v[2] - v1[2];
+	EXPECT_EQ(v - v1, exp);
 }
 
 TEST(TDynamicVector, cant_subtract_vectors_with_not_equal_size)
@@ -207,7 +186,6 @@ TEST(TDynamicVector, can_multiply_vectors_with_equal_size)
 	v1[0] = 1;
 	v1[1] = 2;
 	v1[2] = 3;
-	ASSERT_NO_THROW(v * v1); //remove
 	int res = v * v1;
 	EXPECT_EQ(14, res);
 }
